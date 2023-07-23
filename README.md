@@ -2,10 +2,12 @@
 
 Click Below Link For Experience.
 
-<a href="https://raj5222.github.io/Cloud-Base-Detection/">Live Page</a>
+=>  <a href="https://raj5222.github.io/Cloud-Base-Detection/">Live Page</a>
 
 I Use My Own Python Detection Script As API.<br>
-Script link :- <a href="https://github.com/Raj5222/Api/blob/main/main.py" target="blank">Click Me</a>
+=>  Script link :- <a href="https://github.com/Raj5222/Api/blob/main/main.py" target="blank">Click Me</a>
+
+Currently Detect Faces And Some Objects Only.
 
 # Snap Shot 
 
