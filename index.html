@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css" />
+    <script src="design_script.js" defer></script>
+    <script src="script.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="icon.png">
+    <title>Face And Object Detection</title>
+  </head>
+  <body>
+    <form id="upload-form" class="form">
+      <h1 class="text-center"><img src="face-id.png" alt=" " height="26" width="26" align="buttom">~Detection</h1>
+      <!-- Progress bar -->
+      <div class="progressbar">
+        <div class="progress" id="progress"></div>
+        
+        <div
+          class="progress-step progress-step-active" data-title="Upload"></div>
+        <div class="progress-step" data-title="Result"></div>
+      </div>
+
+      <!-- Steps -->
+      <div class="form-step form-step-active">
+        <div class="input-group">
+          <label for="image">Select Image</label>
+          <input id="image" class="btn" type="file" accept="image/*" required/>
+        </div>
+        <div class="btns-group">
+          <a href="#" id="result-btn" class="btn btn-next">Result</a>
+          <input type="submit" value="Detect" class="btn btn-next"/>
+        </div>
+        </div>
+      </div>
+      <div class="form-step">
+        <div class="input-group">
+          <label for="result">Result</label>
+             <div id="result" class="input-group">Select Any Image.</div>
+        </div>
+        <div class="btns-group">
+          <a class="btn btn-prev" onClick="window.location.reload()">Reset</a>
+          <a href="#" class="btn btn-prev" id="result-show">Previous</a>
+        </div>
+      </div>
+        </div>
+    </div>
+    </form>
+  </body>
+</html>
