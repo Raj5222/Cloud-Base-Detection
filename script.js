@@ -15,7 +15,7 @@ form.addEventListener('submit', async (event) => {
     formData.append('image', resizedImage, 'resized_image.jpeg');
 
     try {
-      const response = await fetch('https://image-nes5.onrender.com/', {
+      const response = await fetch('https://image-detection-olo3.onrender.com', {
         method: 'POST',
         body: formData
       });
