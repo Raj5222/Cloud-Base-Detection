@@ -1,6 +1,5 @@
 const form = document.getElementById('upload-form');
 const resultContainer = document.getElementById('result');
-
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   const formData = new FormData();
@@ -8,6 +7,8 @@ form.addEventListener('submit', async (event) => {
   // Perform client-side image resizing before upload
   const uploadImage = document.getElementById('image').files[0];
   const resizedImage = await resizeImage(uploadImage, 0.25);
+  
+  console.log('Wait For Response');
 
   // Ensure resizedImage is a valid Blob before appending to FormData
   if (resizedImage instanceof Blob) {
@@ -21,7 +22,8 @@ form.addEventListener('submit', async (event) => {
 
       const data = await response.json();
 
-      console.log('API Response:', data); // Log the API response data to the console
+      console.clear();
+      console.log('Response:', data); // Log the API response data to the console
 
       if (response.ok) {
         displayResult(data, resizedImage);
@@ -36,9 +38,9 @@ form.addEventListener('submit', async (event) => {
   }
 });
 
-const image_width = 270;
-const image_hight = 250;
-const cornerRadius = 20;
+const image_width = 550;
+const image_hight = 500;
+const cornerRadius = 5;
 
 function resizeImage(imageFile, scaleFactor) {
   return new Promise((resolve) => {
@@ -135,6 +137,7 @@ function displayResult(data, resizedImage) {
     if (data.objects && Array.isArray(data.objects)) {
       data.objects.forEach((object, index) => {
         if (object.label !== 'Person' && object.vertices && object.vertices.length === 4) {
+          console.log('Skiped Box Around Person');
           const vertices = object.vertices.map((vertex) => {
             return [
               vertex[0] * image_width, // Convert normalized x-coordinate to pixel position
