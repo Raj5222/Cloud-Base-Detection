@@ -9,4 +9,4 @@ Currently Detect Faces And Some Objects Only.
 
 # Snap Shot 
 
-<img width="646" alt="Screenshot 2023-07-24 000253" src="https://github.com/Raj5222/Cloud-Base-Detection/assets/109301347/604f27f5-a8ca-4d22-85f4-8f8d0b3348d9">
+<img width="857" alt="Screenshot 2024-07-18 141251" src="https://github.com/user-attachments/assets/7f937a20-efb6-47b5-a790-904fb777993e">
