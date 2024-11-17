@@ -12,7 +12,7 @@ form.addEventListener('submit', async (event) => {
   if (image instanceof Blob) {
     formData.append('image', image, 'uploaded_image.jpeg');
     try {
-      const response = await fetch('https://node-api-ymyf.onrender.com', {
+      const response = await fetch('https://image-detection-olo3.onrender.com', {
         method: 'POST',
         body: formData
       });
