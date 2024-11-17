@@ -1,21 +1,19 @@
 const form = document.getElementById('upload-form');
 const resultContainer = document.getElementById('result');
-const progress = document.getElementById('progress');
-const resultBtn = document.getElementById('result-btn');
-const resultShowBtn = document.getElementById('result-show');
-const formSteps = document.querySelectorAll(".form-step");
-const progressSteps = document.querySelectorAll(".progress-step");
-
-let formStepsNum = 0;
-
-// Handle form submission and image upload
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   const formData = new FormData();
-  const image = document.getElementById('image').files[0];
 
-  if (image instanceof Blob) {
-    formData.append('image', image, 'uploaded_image.jpeg');
+  // Perform client-side image resizing before upload
+  const uploadImage = document.getElementById('image').files[0];
+  const resizedImage = await resizeImage(uploadImage, 0.25);
+  
+  console.log('Wait For Response');
+
+  // Ensure resizedImage is a valid Blob before appending to FormData
+  if (resizedImage instanceof Blob) {
+    formData.append('image', resizedImage, 'resized_image.jpeg');
+
     try {
       const response = await fetch('https://image-detection-olo3.onrender.com', {
         method: 'POST',
@@ -23,109 +21,151 @@ form.addEventListener('submit', async (event) => {
       });
 
       const data = await response.json();
-      console.log('API Response:', data);
 
-      document.getElementById("data-title").textContent = "Detection Results";
-      const labelValues = document.getElementById("data");
-
-      // Append detected labels for faces and objects
-      labelValues.innerHTML = '';
-      data.faces.concat(data.objects).forEach(function (item) {
-        if (item.label) {
-          const listItem = document.createElement("li");
-          listItem.textContent = item.label;
-          labelValues.appendChild(listItem);
-        }
-      });
+      console.clear();
+      console.log('Response:', data); // Log the API response data to the console
 
       if (response.ok) {
-        const img = new Image();
-        img.onload = function () {
-          displayResult(data, img);
-        };
-        img.src = URL.createObjectURL(image);
+        displayResult(data, resizedImage);
       } else {
-        displayError(data.error || "An error occurred.");
+        displayError(data.error);
       }
     } catch (error) {
-      displayError('Network error: ' + error.message);
+      displayError('An error occurred while processing the request.');
     }
   } else {
-    displayError('Error uploading the image.');
+    displayError('Error resizing the image.');
   }
 });
 
-// Display the detected result on the canvas
-function displayResult(data, image) {
-  resultContainer.innerHTML = ''; // Clear previous result
-  const canvas = document.createElement('canvas');
-  canvas.width = image.naturalWidth;
-  canvas.height = image.naturalHeight;
-  const ctx = canvas.getContext('2d');
+const image_width = 550;
+const image_hight = 500;
+const cornerRadius = 5;
 
-  ctx.drawImage(image, 0, 0);
+function resizeImage(imageFile, scaleFactor) {
+  return new Promise((resolve) => {
+    const fileReader = new FileReader();
 
-  // Draw bounding boxes for detected faces and objects
-  ctx.strokeStyle = '#FF0000';
-  ctx.lineWidth = 3;
+    fileReader.onload = function(event) {
+      const image = new Image();
 
-  data.faces.forEach(face => {
-    ctx.strokeRect(face.x, face.y, face.width, face.height);
+      image.onload = function() {
+        const scaledWidth = image_width;
+        const scaledHeight = image_hight;
+        const canvas = document.createElement('canvas');
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, scaledWidth, scaledHeight);
+
+        // Convert canvas content to Blob
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', 0.8);
+      };
+
+      image.src = event.target.result;
+    };
+
+    fileReader.readAsDataURL(imageFile);
   });
-
-  data.objects.forEach(obj => {
-    ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
-  });
-
-  resultContainer.appendChild(canvas);
 }
 
-// Display error message
-function displayError(message) {
-  resultContainer.innerHTML = `<p class="error">${message}</p>`;
+function displayResult(data, resizedImage) {
+  // Clear previous results
+  resultContainer.innerHTML = '';
+
+  // Create an image element for the detected faces and objects
+  const resultImageTag = document.createElement('img');
+
+
+  resultImageTag.src = URL.createObjectURL(resizedImage);
+  resultImageTag.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = image_width;
+    canvas.height = image_hight;
+    const ctx = canvas.getContext('2d');
+
+    // Draw rounded rectangle
+    ctx.beginPath();
+    ctx.moveTo(cornerRadius, 0);
+    ctx.lineTo(image_width - cornerRadius, 0);
+    ctx.quadraticCurveTo(image_width, 0, image_width, cornerRadius);
+    ctx.lineTo(image_width, image_hight - cornerRadius);
+    ctx.quadraticCurveTo(image_width, image_hight, image_width - cornerRadius, image_hight);
+    ctx.lineTo(cornerRadius, image_hight);
+    ctx.quadraticCurveTo(0, image_hight, 0, image_hight - cornerRadius);
+    ctx.lineTo(0, cornerRadius);
+    ctx.quadraticCurveTo(0, 0, cornerRadius, 0);
+    ctx.closePath();
+    ctx.clip(); // Clip the context to the rounded rectangle path
+
+    // Draw the image on the canvas with rounded corners
+    ctx.drawImage(resultImageTag, 0, 0, image_width, image_hight);
+    ctx.lineWidth = 2;
+    // Draw green bounding boxes for detected faces with labels
+    ctx.strokeStyle = 'green';
+    if (data.faces && Array.isArray(data.faces)) {
+      data.faces.forEach((face, index) => {
+        if (face.vertices && face.vertices.length === 4) {
+          const vertices = face.vertices.map((vertex) => {
+            return [
+              vertex[0], // Convert normalized x-coordinate to pixel position
+              vertex[1]// Convert normalized y-coordinate to pixel position
+            ];
+          });
+
+          ctx.beginPath();
+          ctx.moveTo(vertices[0][0], vertices[0][1]);
+          ctx.lineTo(vertices[1][0], vertices[1][1]);
+          ctx.lineTo(vertices[2][0], vertices[2][1]);
+          ctx.lineTo(vertices[3][0], vertices[3][1]);
+          ctx.closePath();
+          ctx.stroke();
+
+          // Draw label for the face
+          const label = face.label;
+          ctx.fillStyle = 'green';
+          ctx.font = '16px Arial';
+          ctx.fillText(label, vertices[0][0], vertices[0][1] + 20);
+        }
+      });
+    }
+
+    // Draw red bounding boxes for detected objects with labels (excluding "Person")
+    ctx.strokeStyle = 'red';
+    if (data.objects && Array.isArray(data.objects)) {
+      data.objects.forEach((object, index) => {
+        if (object.label !== 'Person' && object.vertices && object.vertices.length === 4) {
+          console.log('Skiped Box Around Person');
+          const vertices = object.vertices.map((vertex) => {
+            return [
+              vertex[0] * image_width, // Convert normalized x-coordinate to pixel position
+              vertex[1] * image_hight // Convert normalized y-coordinate to pixel position
+            ];
+          });
+          ctx.beginPath();
+          ctx.moveTo(vertices[0][0], vertices[0][1]);
+          ctx.lineTo(vertices[1][0], vertices[1][1]);
+          ctx.lineTo(vertices[2][0], vertices[2][1]);
+          ctx.lineTo(vertices[3][0], vertices[3][1]);
+          ctx.closePath();
+          ctx.stroke();
+
+          // Draw label for the object
+          const label = object.label;
+          ctx.fillStyle = 'red';
+          ctx.font = '16px Arial';
+          ctx.fillText(label, vertices[0][0], vertices[0][1] + 20);
+        }
+      });
+    }
+
+    // Append the canvas to the resultContainer
+    resultContainer.innerHTML = ''; // Clear previous content
+    resultContainer.appendChild(canvas);
+  };
 }
-
-// Update form steps
-function updateFormSteps() {
-  formSteps.forEach((formStep) => {
-    formStep.classList.remove("form-step-active");
-  });
-  formSteps[formStepsNum].classList.add("form-step-active");
+function displayError(errorMessage) {
+  resultContainer.innerHTML = `<p>Error: ${errorMessage}</p>`;
 }
-
-// Update progress bar
-function updateProgressbar() {
-  progressSteps.forEach((progressStep, idx) => {
-    progressStep.classList.toggle("progress-step-active", idx <= formStepsNum);
-  });
-
-  const progressActive = document.querySelectorAll(".progress-step-active");
-  progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
-}
-
-// Handle next and previous button clicks for form steps
-document.querySelectorAll(".btn-next").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    formStepsNum++;
-    updateFormSteps();
-    updateProgressbar();
-  });
-});
-
-document.querySelectorAll(".btn-prev").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    formStepsNum--;
-    updateFormSteps();
-    updateProgressbar();
-  });
-});
-
-resultBtn.addEventListener('click', () => {
-  document.getElementById('result-btn').style.display = 'block';
-});
-
-resultShowBtn.addEventListener('click', () => {
-  formStepsNum--;
-  updateFormSteps();
-  updateProgressbar();
-});
