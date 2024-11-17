@@ -56,8 +56,10 @@ function displayResult(data, image) {
   canvas.height = image.naturalHeight;
   const ctx = canvas.getContext('2d');
 
+  // Draw image and results
   ctx.drawImage(image, 0, 0);
   ctx.strokeStyle = '#FF0000';
+
   data.faces.forEach(face => {
     ctx.strokeRect(face.x, face.y, face.width, face.height);
   });
@@ -73,6 +75,38 @@ function displayError(message) {
   resultContainer.textContent = message;
 }
 
+function updateFormSteps() {
+  formSteps.forEach((formStep) => {
+    formStep.classList.remove("form-step-active");
+  });
+  formSteps[formStepsNum].classList.add("form-step-active");
+}
+
+function updateProgressbar() {
+  progressSteps.forEach((progressStep, idx) => {
+    progressStep.classList.toggle("progress-step-active", idx <= formStepsNum);
+  });
+
+  const progressActive = document.querySelectorAll(".progress-step-active");
+  progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
+}
+
+document.querySelectorAll(".btn-next").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    formStepsNum++;
+    updateFormSteps();
+    updateProgressbar();
+  });
+});
+
+document.querySelectorAll(".btn-prev").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    formStepsNum--;
+    updateFormSteps();
+    updateProgressbar();
+  });
+});
+
 resultBtn.addEventListener('click', () => {
   document.getElementById('result-btn').style.display = 'block';
 });
@@ -82,24 +116,3 @@ resultShowBtn.addEventListener('click', () => {
   updateFormSteps();
   updateProgressbar();
 });
-
-function updateFormSteps() {
-  formSteps.forEach((formStep) => {
-    formStep.classList.remove("form-step-active");
-  });
-
-  formSteps[formStepsNum].classList.add("form-step-active");
-}
-
-function updateProgressbar() {
-  progressSteps.forEach((progressStep, idx) => {
-    if (idx <= formStepsNum) {
-      progressStep.classList.add("progress-step-active");
-    } else {
-      progressStep.classList.remove("progress-step-active");
-    }
-  });
-
-  const progressActive = document.querySelectorAll(".progress-step-active");
-  progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
-}
