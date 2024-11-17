@@ -9,17 +9,18 @@
   <link rel="stylesheet" href="style.css" />
   <script src="design_script.js" defer></script>
   <script src="script.js" defer></script>
-  <link rel="icon" type="image/x-icon" href="icon.png">
-  <title>Face And Object Detection</title>
+  <title>Face and Object Detection</title>
 </head>
 
 <body>
   <form id="upload-form" class="form">
-    <h1 class="text-center"><img src="face-id.png" alt="loading" height="26" width="26" align="buttom">~Detection</h1>
-    <!-- Progress bar -->
+    <h1 class="text-center">
+      <img src="face-id.png" alt="loading" height="26" width="26" align="bottom"> ~Detection
+    </h1>
+
+    <!-- Progress Bar -->
     <div class="progressbar">
       <div class="progress" id="progress"></div>
-
       <div class="progress-step progress-step-active" data-title="Upload"></div>
       <div class="progress-step" data-title="Result"></div>
     </div>
@@ -35,11 +36,11 @@
         <input type="submit" value="Detect" class="btn btn-next" />
       </div>
     </div>
-    </div>
+
     <div class="form-step">
       <div class="input-group">
-        <label for="result"></label>
-        <div id="result" class="input-group">Select Any Image.</div>
+        <label for="result">Detected Results</label>
+        <div id="result" class="input-group">Select an image for detection.</div>
       </div>
       <h3><span id="data-title" class="input-group"></span></h3>
       <span id="data" class="input-group"> </span><br>
@@ -48,10 +49,9 @@
         <a href="#" class="btn btn-prev" id="result-show">Previous</a>
       </div>
     </div>
-    </div>
-    </div>
   </form>
-    <div id="result" class="input-group"></div>
+
+  <div id="result" class="input-group"></div>
 </body>
 
 </html>
