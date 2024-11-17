@@ -12,6 +12,11 @@
   display: none;
 }
 
+canvas {
+  max-height: 70vh; 
+  max-width: 60vw;
+}
+
 body {
   font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
