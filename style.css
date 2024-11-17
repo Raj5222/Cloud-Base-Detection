@@ -24,6 +24,7 @@ body {
   margin: 0;
   width:90vh;
   display: grid;
+  align-iteam: center;
   place-items: center;
   height: 90vh;
   background-color: black;
