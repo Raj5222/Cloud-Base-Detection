@@ -40,8 +40,8 @@ input {
 }
 
 canvas {
-  max-height: 70vh; 
-  max-width: 60vw;
+  max-height: 780px; 
+  max-width: 560px;
 }
 
 .width-50 {
