@@ -1,20 +1,5 @@
-/* Root Variables */
 :root {
   --primary-color: rgb(11, 78, 179);
-  --max-width: 560px;
-  --max-height: 780px;
-  --transition-speed: 0.3s;
-}
-
-/* Global Styles */
-body {
-  font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  background-color: #000;
-  color: #fff;
 }
 
 *,
@@ -23,28 +8,49 @@ body {
   box-sizing: border-box;
 }
 
-input,
-button {
-  border: none;
-  outline: none;
+#result-btn {
+  display: none;
 }
 
+body {
+  font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background-color: black;
+
+}
+
+/* Global Stylings */
 label {
   display: block;
   margin-bottom: 0.5rem;
 }
 
-canvas {
-  max-width: var(--max-width);
-  max-height: var(--max-height);
+input {
   display: block;
-  margin: 0 auto;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+
+}
+
+.width-50 {
+  width: 50%;
+}
+
+.ml-auto {
+  margin-left: auto;
 }
 
 .text-center {
   text-align: center;
+  color: #fff;
 }
 
+/* Progressbar */
 .progressbar {
   position: relative;
   display: flex;
@@ -68,7 +74,7 @@ canvas {
 .progress {
   background-color: var(--primary-color);
   width: 0%;
-  transition: width var(--transition-speed) ease-in-out;
+  transition: 3s;
 }
 
 .progress-step {
@@ -79,12 +85,11 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color var(--transition-speed);
 }
 
 .progress-step::before {
   counter-increment: step;
-  content: counter(step);
+  content:counter(step);
 }
 
 .progress-step::after {
@@ -97,22 +102,24 @@ canvas {
 
 .progress-step-active {
   background-color: var(--primary-color);
-  color: #fff;
+  color: #ffffff;
 }
 
+/* Form */
 .form {
   min-width: clamp(350px, 30%, 480px);
+  max-width: fit-content;
   margin: 0 auto;
   border: 2px solid #ccc;
   border-radius: 0.35rem;
   padding: 1.5rem;
-  overflow: hidden;
+  overflow: var(--primary-color);
 }
 
 .form-step {
   display: none;
   transform-origin: top;
-  animation: fadeIn 0.7s ease-out;
+  animation: animate 0.7s;
 }
 
 .form-step-active {
@@ -122,8 +129,22 @@ canvas {
 .input-group {
   margin: 2rem 0;
   padding: 10px;
+  color: #fff;
 }
 
+@keyframes animate {
+  from {
+    transform: scale(1, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+}
+
+/* Button */
 .btns-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -132,57 +153,27 @@ canvas {
 
 .btn {
   padding: 0.75rem;
+  display: block;
   text-decoration: none;
   background-color: var(--primary-color);
-  color: #fff;
+  color: #f3f3f3;
   text-align: center;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+  transition: 0.3s;
 }
 
 .btn:hover {
-  background-color: #1a61a7;
   box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
 }
 
-input[type="file"]::file-selector-button {
+/* Input Type File */
+input[type=file]::file-selector-button {
+  margin-right: 20px;
+  border: none;
   background: var(--primary-color);
   border-radius: 10px;
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-input[type="file"]::file-selector-button:hover {
-  background-color: #1a61a7;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    transform: scale(1, 0);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1, 1);
-    opacity: 1;
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .form {
-    width: 100%;
-    padding: 1rem;
-  }
-
-  .progressbar {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .progress-step {
-    margin-bottom: 1rem;
-  }
+  transition: background .2s ease-in-out;
 }
