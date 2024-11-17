@@ -1,16 +1,19 @@
+/* Root Variables */
 :root {
   --primary-color: rgb(11, 78, 179);
   --max-width: 560px;
   --max-height: 780px;
+  --transition-speed: 0.3s;
 }
 
+/* Global Styles */
 body {
   font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   display: grid;
   place-items: center;
   min-height: 100vh;
-  background-color: black;
+  background-color: #000;
   color: #fff;
 }
 
@@ -20,17 +23,15 @@ body {
   box-sizing: border-box;
 }
 
+input,
+button {
+  border: none;
+  outline: none;
+}
+
 label {
   display: block;
   margin-bottom: 0.5rem;
-}
-
-input {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
 }
 
 canvas {
@@ -67,7 +68,7 @@ canvas {
 .progress {
   background-color: var(--primary-color);
   width: 0%;
-  transition: width 0.5s ease;
+  transition: width var(--transition-speed) ease-in-out;
 }
 
 .progress-step {
@@ -78,6 +79,7 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: background-color var(--transition-speed);
 }
 
 .progress-step::before {
@@ -95,22 +97,22 @@ canvas {
 
 .progress-step-active {
   background-color: var(--primary-color);
-  color: #ffffff;
+  color: #fff;
 }
 
 .form {
   min-width: clamp(350px, 30%, 480px);
-  max-width: var(--max-width);
   margin: 0 auto;
   border: 2px solid #ccc;
   border-radius: 0.35rem;
   padding: 1.5rem;
+  overflow: hidden;
 }
 
 .form-step {
   display: none;
   transform-origin: top;
-  animation: animate 0.7s;
+  animation: fadeIn 0.7s ease-out;
 }
 
 .form-step-active {
@@ -130,35 +132,34 @@ canvas {
 
 .btn {
   padding: 0.75rem;
-  display: block;
   text-decoration: none;
   background-color: var(--primary-color);
-  color: #f3f3f3;
+  color: #fff;
   text-align: center;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 .btn:hover {
+  background-color: #1a61a7;
   box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
 }
 
-input[type=file]::file-selector-button {
-  margin-right: 20px;
-  border: none;
+input[type="file"]::file-selector-button {
   background: var(--primary-color);
   border-radius: 10px;
   color: #fff;
   cursor: pointer;
-  transition: background .2s ease-in-out;
+  transition: background-color 0.3s;
 }
 
-input[type=file]::file-selector-button:hover {
-  background: darken(var(--primary-color), 10%);
+input[type="file"]::file-selector-button:hover {
+  background-color: #1a61a7;
 }
 
-@keyframes animate {
+/* Animations */
+@keyframes fadeIn {
   from {
     transform: scale(1, 0);
     opacity: 0;
@@ -169,6 +170,7 @@ input[type=file]::file-selector-button:hover {
   }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
   .form {
     width: 100%;
